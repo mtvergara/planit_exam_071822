@@ -4,6 +4,7 @@ import org.apache.commons.exec.util.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 
 public class PageObject_ShopPage {
@@ -13,9 +14,11 @@ public class PageObject_ShopPage {
 		this.driver = driver;
 	}
 
-	WebElement tab_Shop = driver.findElement(By.id("nav-shop"));
+	@FindBy(id="nav-shop")
+	WebElement tab_Shop;
 	
-	WebElement tab_Cart = driver.findElement(By.id("nav-cart"));
+	@FindBy(id="nav-cart")
+	WebElement tab_Cart;
 	
 	
 	public void ClickShop() {
