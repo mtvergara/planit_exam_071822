@@ -7,70 +7,79 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.testng.Assert;
 
-public class PageObject_ShopPage {
-	WebDriver driver;
-	long grandTotalComputed = 0;
-	public PageObject_ShopPage(WebDriver driver) {
-		this.driver = driver;
-	}
+import common.BasePage;
 
-	@FindBy(id="nav-shop")
-	WebElement tab_Shop;
+public class PageObject_ShopPage {
 	
-	@FindBy(id="nav-cart")
-	WebElement tab_Cart;
+	double grandTotalComputed = 0;
+
+
+	By tab_Shop = By.id("nav-shop");
+	
+	By tab_Cart = By.id("nav-cart");
 	
 	
 	public void ClickShop() {
-		tab_Shop.click();
+		BasePage.driver.findElement(tab_Shop).click();
+		System.out.println("Navigated to Shop page");
 	}
 	
 	public void AddItemsToCart(String item, int quantity) {
 		for(int i=1;i<=quantity;i++ ) {
-			WebElement buyItem = driver.findElement(By.xpath("//h4[text()='"+item+"']//parent::div//a[@ng-click='add(item)']"));
+			WebElement buyItem = BasePage.driver.findElement(By.xpath("//h4[text()='"+item+"']//parent::div//a[@ng-click='add(item)']"));
 			buyItem.click();
 		}
+		System.out.println("Item: "+item+" with Quantity: "+quantity+" is added to cart.");
 	}
 	
 	public void ClickCart() {
-		tab_Cart.click();
+		BasePage.driver.findElement(tab_Cart).click();
+		System.out.println("Navigated to Cart page");
 	}
 	
 	public boolean ValidateItemsInCart(String item, int quantity) {
-			WebElement itemQty = driver.findElement(By.xpath("//td[contains(text(),'"+item+"')]//parent::tr/td[3]/input[@value='"+quantity+"']"));
+			WebElement itemQty = BasePage.driver.findElement(By.xpath("//td[contains(text(),'"+item+"')]//parent::tr/td[3]/input[@value='"+quantity+"']"));
 			if (itemQty.isDisplayed()) {
+				System.out.println("Item: "+item+" with Quantity: "+quantity+" is present in the cart.");
 				return true;
 			} else {
+				System.out.println("Item: "+item+" with Quantity: "+quantity+" is NOT present in the cart.");
 				return false;
 			}
 		
 	}
 	
-	public boolean ValidateProductPrice(String item, long price) {
-		long itemPrice = Long.parseLong(driver.findElement(By.xpath("//td[contains(text(),'"+item+"')]//parent::tr/td[2]")).getText().substring(1));
+	public boolean ValidateProductPrice(String item, double price) {
+		double itemPrice = Double.parseDouble(BasePage.driver.findElement(By.xpath("//td[contains(text(),'"+item+"')]//parent::tr/td[2]")).getText().substring(1));
 		if (price==itemPrice) {
+			System.out.println("Item: "+item+" with Price: "+itemPrice+" is correct in the cart. Expected is "+price);
 			return true;
 		} else {
+			System.out.println("Item: "+item+" with Price: "+itemPrice+" is incorrect in the cart. Expected is "+price);
 			return false;
 		}
 	
 	}
 	
-	public boolean ValidateSubTotal(String item, long price, int quantity) {
-		long subTotal = Long.parseLong(driver.findElement(By.xpath("//td[contains(text(),'Stuffed Frog')]//parent::tr/td[4]")).getText().substring(1));
+	public boolean ValidateSubTotal(String item, double price, int quantity) {
+		double subTotal = Double.parseDouble(BasePage.driver.findElement(By.xpath("//td[contains(text(),'"+item+"')]//parent::tr/td[4]")).getText().substring(1));
 		grandTotalComputed = grandTotalComputed + subTotal;
 		if (price*quantity==subTotal) {
+			System.out.println("Item: "+item+" with SubTotal: "+subTotal+" is correct in the cart. Expected is "+price*quantity);
 			return true;
 		} else {
+			System.out.println("Item: "+item+" with SubTotal: "+subTotal+" is incorrect in the cart. Expected is "+price*quantity);
 			return false;
 		}
 	}
 	
 	public boolean ValidateGrandTotal() {
-		long grandTotalActual = Long.parseLong(driver.findElement(By.xpath("//*[@class='total ng-binding']")).getText().substring(1));
+		double grandTotalActual = Double.parseDouble(BasePage.driver.findElement(By.xpath("//*[@class='total ng-binding']")).getText().substring(7));
 		if (grandTotalComputed==grandTotalActual) {
+			System.out.println("GrandTotal: "+grandTotalActual+" is correct in the cart. Expected is "+grandTotalComputed);
 			return true;
 		} else {
+			System.out.println("GrandTotal: "+grandTotalActual+" is incorrect in the cart. Expected is "+grandTotalComputed);
 			return false;
 		}
 	}

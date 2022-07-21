@@ -4,14 +4,17 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import common.BasePage;
 import jupiter.product.toys.pageObject.PageObject_ShopPage;
-import jupiter.product.toys.utilities.WebDriverManager;
 
-@Test
+
 public class TC_4 {
+	@Test
 	public void tc_4_validate_total() {
+		PageObject_ShopPage sp = new PageObject_ShopPage();
 		String url = "https://jupiter.cloud.planittesting.com";
 		String item1 = "Stuffed Frog";
 		String item2 = "Fluffy Bunny";
@@ -19,29 +22,33 @@ public class TC_4 {
 		int item1qty = 2;
 		int item2qty = 5;
 		int item3qty = 3;
-		long item1price = (long) 10.99;
-		long item2price = (long) 9.99;
-		long item3price = (long) 14.99;
-		WebDriver driver = WebDriverManager.getDriver("Chrome", url);
-		 
-		PageObject_ShopPage obj = PageFactory.initElements(driver, PageObject_ShopPage.class);
-		obj.ClickShop();
-		obj.AddItemsToCart(item1, item1qty);
-		obj.AddItemsToCart(item2, item2qty);
-		obj.AddItemsToCart(item3, item3qty);
-		obj.ClickCart();
+		double item1price = 10.99;
+		double item2price = 9.99;
+		double item3price = 14.99;
+		BasePage.initializeDriver(url);
+		
+		System.out.println("Starting test execution of Test Case 4...");
+		
+		sp.ClickShop();
+		sp.AddItemsToCart(item1, item1qty);
+		sp.AddItemsToCart(item2, item2qty);
+		sp.AddItemsToCart(item3, item3qty);
+		sp.ClickCart();
 		 
 		 //product price
-		 obj.ValidateProductPrice(item1, item1price);
-		 obj.ValidateProductPrice(item2, item2price);
-		 obj.ValidateProductPrice(item3, item3price);
+		Assert.assertTrue(sp.ValidateProductPrice(item1, item1price));
+		Assert.assertTrue(sp.ValidateProductPrice(item2, item2price));
+		Assert.assertTrue(sp.ValidateProductPrice(item3, item3price));
 		 
 		 //subtotal
-		 obj.ValidateSubTotal(item1, item1price, item1qty);
-		 obj.ValidateSubTotal(item2, item2price, item2qty);
-		 obj.ValidateSubTotal(item3, item3price, item3qty);
+		Assert.assertTrue(sp.ValidateSubTotal(item1, item1price, item1qty));
+		Assert.assertTrue(sp.ValidateSubTotal(item2, item2price, item2qty));
+		Assert.assertTrue(sp.ValidateSubTotal(item3, item3price, item3qty));
 		 
 		 //total
-		 obj.ValidateGrandTotal();
+		Assert.assertTrue(sp.ValidateGrandTotal());
+		
+		System.out.println("Ending test execution of Test Case 4...");
+		BasePage.terminateWebDriver();
 	}
 }
